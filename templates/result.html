@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Response Page</title>
+    <style>
+        .flex-container {
+            display: flex;
+            flex-direction: column;
+            height: 100px;
+            gap:10;
+            align-items: center;
+            margin-top:40px;
+            }
+        .heading{
+                text-align: center;
+                font-size: 15px;
+                margin:20px;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="flex-container">
+        <div class="heading">
+            <h1>Result</h1>
+        </div>
+        <div class="JSON">
+            <p>JSON Response: {{jsonResponse}}</p>
+        </div>
+    </div>
+    
+</body>
+
+</html>
