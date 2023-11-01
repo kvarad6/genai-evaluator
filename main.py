@@ -59,7 +59,7 @@ def getContent(path):
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./credentials.json"
 
 aiplatform.init(
-    project='applied-ai-labs',
+    project='',
     location='us-central1',
 
     # Google Cloud Storage bucket in same region as location
