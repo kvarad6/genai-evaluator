@@ -32,7 +32,6 @@ app.dict = {}
 load_dotenv()
 
 def getContent(path):
-    # pdfreader = PdfReader('ipad pro.pdf')
     pdfreader = PdfReader(path)
 
     rawText = ''
@@ -49,9 +48,6 @@ def getContent(path):
     chunk_overlap  = 0,
     length_function = len)
     texts = text_splitter.split_text(rawText)
-
-    # embeddings = VertexAIEmbeddings()
-    # docSearch = FAISS.from_texts(texts, embeddings)
     return texts
 
 
@@ -61,32 +57,7 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./credentials.json"
 aiplatform.init(
     project='',
     location='us-central1',
-
-    # Google Cloud Storage bucket in same region as location
-    # used to stage artifacts
-    # staging_bucket='gs://my_staging_bucket',
-
-    # custom google.auth.credentials.Credentials
-    # environment default creds used if not set
-    # credentials="./credentials.json",
-
-    # # customer managed encryption key resource name
-    # # will be applied to all Vertex AI resources if set
-    # encryption_spec_key_name=my_encryption_key_name,
 )
-
-# text_splitter = CharacterTextSplitter(        
-#     separator = "\n",
-#     chunk_size = 1000,
-#     #chunk_overlap: as chunk size is 1000, first sentance will have 0-1000 characters, and second sentence will start from 800th character.
-#     chunk_overlap  = 200,
-#     length_function = len,
-# )
-# texts = text_splitter.split_text(rawText)
-# embeddings = VertexAIEmbeddings()
-
-# docSearch = FAISS.from_texts(texts, embeddings)
-
 
 llm = VertexAI()
 
@@ -105,11 +76,6 @@ def generateQuestion(input_content):
         # "Generate few questions from the {content}."
     )
     chain = LLMChain(llm=VertexAI(), prompt=prompt_template)
-
-
-    # inputChain = load_qa_chain(llm, chain_type="stuff")
-    # docs = docSearch.similarity_search(input_content)
-    # ans = inputChain.run(input_documents = docs, question=input_content)
     result = chain.run(input_content)
     lines = result.strip().split('\n')
 
@@ -133,53 +99,6 @@ def generateQuestion(input_content):
     qaList.append(questions[0])
     qaList.append(answers[0])
     return qaList
-
-    # user_answer = input(input_question + " ")
-    expected_answer = initial_answer
-    # chain = load_qa_chain(llm, chain_type="stuff")
-    # docs = docSearch.similarity_search(input_question)
-    # ans = chain.run(input_documents = docs, question=input_question)
-    # qaList = generateQuestion(user_answer)
-    # ans = qaList[1]
-    similarity_score = cosine_similarity_score(user_answer, expected_answer)
-    print(f"Cosine Similarity: {similarity_score}")
-    print("count1:", count)
-    updatedDict = "ansDict" + str(count+1)
-    print("count2:", count)
-    print("updated dict name:", updatedDict)
-    updatedDict = {updatedDict : {
-        "Question": input_question,
-        "User Input": user_answer,
-        "Expected Answer": expected_answer,
-        "Score": similarity_score
-    }}
-    # updatedDict = "ansDict" + str(count+1)
-    dict.update(updatedDict)
-    count = count + 1
-    
-    # print("ansJson:", ansJson)  
-    # print("------------------------------")  
-    # if(count==2):
-    #     return ansJson
-    # if similarity_score > 0.4:
-        # print("correct answer")
-        # qaList = generateQuestion(user_answer)
-        # input_question = qaList[0]
-        # expected_answer = qaList[1]
-        # count = count + 1
-        # ansJson = get_answer(user_answer, initial_answer, count, input_question, dict)
-                
-    # else:
-    #     print("According to me the answer should be:", expected_answer)
-    #     print("You have provided the answer: ", user_answer)
-    #     user_answer = input("Can you explain regarding your answer: " + " ")
-        # qaList = generateQuestion(user_answer)
-        # input_question = qaList[0]
-        # expected_answer = qaList[1]
-        # count = count + 1
-        # ansJson = get_answer(user_answer, initial_answer, count, input_question)
-    return dict
-
 @app.get("/")
 def read_form(request: Request):
     app.counter = 0
@@ -246,9 +165,6 @@ async def getQuestions(request: Request, path: str = Form(...)):
     }}
     app.dict.update(updatedDict)
     return templates.TemplateResponse("getFirstQuestion.html", {"request": request, "initial_question": initial_question, "initial_answer": initial_answer, "path": path})
-
-
-# getQuestions('ipad pro.pdf')
 
 
 
